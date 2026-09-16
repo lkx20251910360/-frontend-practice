@@ -12,7 +12,7 @@
        </header>
        <nav>
                <a href="#basic">基本信息</a>
-               <a href="#interest">兴趣方向</a>
+
                <a href="#intro">提交报名</a>
        </nav>
     <main>
@@ -33,8 +33,12 @@
             </p>
 
             <p>
-                <label for="age">年龄：</label>
-                <input type="number" id="age" name="age" min="16" max="30" required>
+                <label for="grade"> 年级 </label >
+                <select id="grade" name="grade">
+                    <option value=""> 请选择 </option > 
+                    <option value="1"> 大一 </option > 
+                    <option value="2"> 大二 </option >
+                </select >
             </p>
 
             <p>
@@ -57,7 +61,6 @@
 
 
         <section id="interest">
-            <h2>兴趣方向</h2>
             <p>性别：</p>
             <input type="radio" id="male" name="gender" value="男" required>
             <label for="male">男</label>
