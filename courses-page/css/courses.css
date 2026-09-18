@@ -35,3 +35,6 @@ body{
  @media (min-width : 992px){ 
      . course-card { padding : 24px; }
 }
+.card .card-title{
+     color:#0b5ed7
+}
