@@ -6,8 +6,12 @@ const tip = document.querySelector('#tip');
 const list = document.querySelector('#book-list');
 const searchInput = document.querySelector('#search-input');
 
-let books = [];
+let books = JSON.parse(localStorage.getItem('books')) || [];
 let keyword = '';
+
+const save = () => {
+    localStorage.setItem('books', JSON.stringify(books));
+};
 
 const render = () => {
     list.innerHTML = '';
@@ -37,6 +41,7 @@ const render = () => {
         toggle.className = 'toggle';
         toggle.addEventListener('click', () => {
             book.read = !book.read;
+            save();
             render();
         });
         li.appendChild(toggle);
@@ -46,6 +51,7 @@ const render = () => {
         del.className = 'del';
         del.addEventListener('click', () => {
             books = books.filter(b => b !== book);
+            save();
             render();
         });
         li.appendChild(del);
@@ -86,6 +92,7 @@ form.addEventListener('submit', (e) => {
     authorInput.value = '';
     ratingInput.value = '';
 
+    save();
     render();
 });
 
