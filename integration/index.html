@@ -1,46 +1,68 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>迷你版校园公共信息中心</title>
-  <link rel="stylesheet" href="libs/bootstrap.min.css">
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>迷你版校园公共信息中心</title>
+    <link rel="stylesheet" href="libs/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container">
-      <a class="navbar-brand" href="#">校园信息中心</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="mainNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link active" href="#home">首页</a></li>
-          <li class="nav-item"><a class="nav-link" href="#study">自习室</a></li>
-          <li class="nav-item"><a class="nav-link" href="#stats">统计</a></li>
-          <li class="nav-item"><a class="nav-link" href="three-d/scene.html">校园三维</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">校园信息中心</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#home">首页</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#study">自习室</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#stats">统计</a></li>
+                    <li class="nav-item"><a class="nav-link" href="three-d/scene.html">校园三维</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-  <main class="container my-4">
-    <section id="home" class="mb-5">
-      <h2>欢迎来到校园公共信息中心</h2>
-      <p>本页面整合了自习室查询、使用统计与校园三维导览功能。</p>
-    </section>
+    <main class="container my-4">
+        <section id="home" class="mb-5">
+            <h2>欢迎来到校园公共信息中心</h2>
+            <p>本页面整合了自习室查询、使用统计与校园三维导览功能。</p>
+        </section>
 
-    <section id="study" class="mb-5">
-      <h2>自习室查询</h2>
-    </section>
+        <section id="study" class="mb-5">
+            <h2>自习室查询</h2>
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <select id="floorFilter" class="form-select">
+                        <option value="all">全部楼层</option>
+                        <option value="1">一楼</option>
+                        <option value="2">二楼</option>
+                        <option value="3">三楼</option>
+                        <option value="4">四楼</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="openFilter">
+                        <label class="form-check-label" for="openFilter">仅显示开放</label>
+                    </div>
+                </div>
+            </div>
+            <ul id="roomList" class="list-group"></ul>
+        </section>
 
-    <section id="stats" class="mb-5">
-      <h2>使用统计</h2>
-    </section>
-  </main>
+        <section id="stats" class="mb-5">
+            <h2>使用统计</h2>
+            <div style="max-width: 600px;">
+                <canvas id="usageChart"></canvas>
+            </div>
+        </section>
+    </main>
 
-  <script src="libs/bootstrap.bundle.min.js"></script>
-  <script src="js/main.js"></script>
+    <script src="libs/bootstrap.bundle.min.js"></script>
+    <script src="libs/chart.umd.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
