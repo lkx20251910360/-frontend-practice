@@ -33,10 +33,31 @@
 
         <section id="study" class="mb-5">
             <h2>自习室查询</h2>
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <select id="floorFilter" class="form-select">
+                        <option value="all">全部楼层</option>
+                        <option value="1">一楼</option>
+                        <option value="2">二楼</option>
+                        <option value="3">三楼</option>
+                        <option value="4">四楼</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="openFilter">
+                        <label class="form-check-label" for="openFilter">仅显示开放</label>
+                    </div>
+                </div>
+            </div>
+            <ul id="roomList" class="list-group"></ul>
         </section>
 
         <section id="stats" class="mb-5">
             <h2>使用统计</h2>
+            <div style="max-width: 600px;">
+                <canvas id="usageChart"></canvas>
+            </div>
         </section>
 
         <section id="three" class="mb-5">
@@ -45,5 +66,7 @@
     </main>
 
     <script src="libs/bootstrap.bundle.min.js"></script>
+    <script src="libs/chart.umd.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
