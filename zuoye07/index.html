@@ -52,6 +52,32 @@
       new THREE.MeshStandardMaterial({ color: 0xffffff })
     );
     scene.add(moon);
+
+    let t = 0;
+    function animate() {
+      requestAnimationFrame(animate);
+      t += 0.01;
+
+      planet.position.x = Math.cos(t) * 3.5;
+      planet.position.z = Math.sin(t) * 3.5;
+      planet.rotation.y += 0.02;
+
+      moon.position.x = planet.position.x + Math.cos(t * 3) * 1.2;
+      moon.position.z = planet.position.z + Math.sin(t * 3) * 1.2;
+      moon.position.y = Math.sin(t * 3) * 0.5;
+
+      sun.rotation.y += 0.005;
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
   </script>
 </body>
 </html>
