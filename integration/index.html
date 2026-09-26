@@ -3,47 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>迷你版权园信息中心</title>
+  <title>迷你版校园公共信息中心</title>
+  <link rel="stylesheet" href="libs/bootstrap.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header>
-    <h1>迷你版权园信息中心</h1>
-    <nav>
-      <button class="nav-btn active" data-target="home">首页</button>
-      <button class="nav-btn" data-target="data">数据</button>
-      <button class="nav-btn" data-target="chart">可视化</button>
-      <button class="nav-btn" data-target="about">关于</button>
-    </nav>
-  </header>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="#">校园信息中心</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="#home">首页</a></li>
+          <li class="nav-item"><a class="nav-link" href="#study">自习室</a></li>
+          <li class="nav-item"><a class="nav-link" href="#stats">统计</a></li>
+          <li class="nav-item"><a class="nav-link" href="three-d/scene.html">校园三维</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-  <main>
-    <section id="home" class="panel active">
-      <h2>欢迎</h2>
-      <p>状态：<span id="status">加载中...</span></p>
+  <main class="container my-4">
+    <section id="home" class="mb-5">
+      <h2>欢迎来到校园公共信息中心</h2>
+      <p>本页面整合了自习室查询、使用统计与校园三维导览功能。</p>
     </section>
 
-    <section id="data" class="panel">
-      <h2>数据列表</h2>
-      <button id="load-data">加载数据</button>
-      <button id="clear-data">清空</button>
-      <ul id="data-list"></ul>
-      <p id="empty-tip">暂无数据</p>
+    <section id="study" class="mb-5">
+      <h2>自习室查询</h2>
     </section>
 
-    <section id="chart" class="panel">
-      <h2>可视化</h2>
-      <canvas id="bar-chart" width="600" height="300"></canvas>
-    </section>
-
-    <section id="about" class="panel">
-      <h2>关于</h2>
-      <p>主题：迷你版权园信息中心</p>
+    <section id="stats" class="mb-5">
+      <h2>使用统计</h2>
     </section>
   </main>
 
-  <script src="libs/chart.umd.js"></script>
-  <script src="js/main.js" defer></script>
-  <script src="js/chart.js" defer></script>
+  <script src="libs/bootstrap.bundle.min.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
