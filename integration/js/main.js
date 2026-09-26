@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
     renderRooms();
 
     loadChart();
+    loadThree();
 });
 
 function loadChart() {
@@ -101,4 +102,75 @@ function loadChart() {
                 }
             });
         });
+}
+
+function loadThree() {
+    var container = document.getElementById('three-container');
+    var scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x1a2233);
+
+    var camera = new THREE.PerspectiveCamera(
+        45,
+        container.clientWidth / container.clientHeight,
+        0.1,
+        1000
+    );
+    camera.position.set(4, 3, 6);
+
+    var renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(renderer.domElement);
+
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+
+    var dir = new THREE.DirectionalLight(0xffffff, 0.8);
+    dir.position.set(3, 6, 4);
+    scene.add(dir);
+
+    var stage = new THREE.Mesh(
+        new THREE.CylinderGeometry(2.2, 2.4, 0.3, 48),
+        new THREE.MeshStandardMaterial({ color: 0x37474f })
+    );
+    stage.position.y = -0.15;
+    scene.add(stage);
+
+    var items = new THREE.Group();
+
+    var geos = [
+        new THREE.BoxGeometry(0.8, 0.8, 0.8),
+        new THREE.SphereGeometry(0.5, 32, 32),
+        new THREE.TorusGeometry(0.4, 0.16, 16, 48)
+    ];
+
+    var colors = [0x4fc3f7, 0xffb74d, 0xef5350];
+
+    for (var i = 0; i < geos.length; i++) {
+        var angle = (i / geos.length) * Math.PI * 2;
+        var mesh = new THREE.Mesh(
+            geos[i],
+            new THREE.MeshStandardMaterial({ color: colors[i] })
+        );
+        mesh.position.set(Math.cos(angle) * 1.4, 0.6, Math.sin(angle) * 1.4);
+        items.add(mesh);
+    }
+
+    scene.add(items);
+
+    function animate() {
+        requestAnimationFrame(animate);
+        items.rotation.y += 0.005;
+        controls.update();
+        renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener('resize', function () {
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+    });
 }
