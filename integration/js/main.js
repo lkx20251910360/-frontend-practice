@@ -1,62 +1,115 @@
-document.addEventListener('DOMContentLoaded', async () => {
-    const rooms = [
+document.addEventListener('DOMContentLoaded', function () {
+    var rooms = [
         { name: '一楼自习室', floor: 1, open: true },
         { name: '二楼自习室', floor: 2, open: true },
         { name: '三楼自习室', floor: 3, open: false },
         { name: '四楼研讨室', floor: 4, open: true }
     ];
 
-    const floorFilter = document.getElementById('floorFilter');
-    const openFilter = document.getElementById('openFilter');
-    const roomList = document.getElementById('roomList');
+    var floorFilter = document.getElementById('floorFilter');
+    var openFilter = document.getElementById('openFilter');
+    var roomList = document.getElementById('roomList');
 
     function renderRooms() {
-        const floor = floorFilter.value;
-        const openOnly = openFilter.checked;
+        var floor = floorFilter.value;
+        var openOnly = openFilter.checked;
+        var result = [];
 
-        let filtered = rooms;
-        if (floor !== 'all') filtered = filtered.filter(r => r.floor === Number(floor));
-        if (openOnly) filtered = filtered.filter(r => r.open);
+        for (var i = 0; i < rooms.length; i++) {
+            var room = rooms[i];
+            var matchFloor = false;
+            var matchOpen = false;
 
-        roomList.innerHTML = filtered.length
-            ? filtered.map(r => `<li class="list-group-item">${r.name} — ${r.open ? '开放' : '关闭'}</li>`).join('')
-            : '<li class="list-group-item text-muted">无匹配结果</li>';
+            if (floor === 'all' || room.floor === Number(floor)) {
+                matchFloor = true;
+            }
+
+            if (!openOnly || room.open) {
+                matchOpen = true;
+            }
+
+            if (matchFloor && matchOpen) {
+                result.push(room);
+            }
+        }
+
+        roomList.innerHTML = '';
+
+        if (result.length === 0) {
+            var emptyItem = document.createElement('li');
+            emptyItem.className = 'list-group-item text-muted';
+            emptyItem.textContent = '无匹配结果';
+            roomList.appendChild(emptyItem);
+            return;
+        }
+
+        for (var j = 0; j < result.length; j++) {
+            var item = document.createElement('li');
+            item.className = 'list-group-item';
+
+            var status = '关闭';
+            if (result[j].open) {
+                status = '开放';
+            }
+
+            item.textContent = result[j].name + ' — ' + status;
+            roomList.appendChild(item);
+        }
     }
 
     floorFilter.addEventListener('change', renderRooms);
     openFilter.addEventListener('change', renderRooms);
     renderRooms();
 
-    const res = await fetch('data/data.json');
-    const data = await res.json();
+    loadChart();
+    loadThree();
+});
 
-    const ctx = document.getElementById('usageChart');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: data.map(d => d.room),
-            datasets: [{
-                label: '使用量（人次）',
-                data: data.map(d => d.usage),
-                backgroundColor: '#0d6efd'
-            }]
-        },
-        options: {
-            plugins: {
-                title: { display: true, text: '自习室使用统计' },
-                subtitle: { display: true, text: '数据来源：校园信息中心' }
-            },
-            scales: {
-                y: { beginAtZero: true, title: { display: true, text: '人次' } }
+function loadChart() {
+    fetch('data/data.json')
+        .then(function (res) {
+            return res.json();
+        })
+        .then(function (data) {
+            var labels = [];
+            var values = [];
+
+            for (var i = 0; i < data.length; i++) {
+                labels.push(data[i].room);
+                values.push(data[i].usage);
             }
-        }
-    });
 
-    const container = document.getElementById('three-container');
-    const scene = new THREE.Scene();
+            var ctx = document.getElementById('usageChart');
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '使用量（人次）',
+                        data: values,
+                        backgroundColor: '#0d6efd'
+                    }]
+                },
+                options: {
+                    plugins: {
+                        title: { display: true, text: '自习室使用统计' },
+                        subtitle: { display: true, text: '数据来源：校园信息中心' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: '人次' } }
+                    }
+                }
+            });
+        });
+}
+
+function loadThree() {
+    var container = document.getElementById('three-container');
+    var scene = new THREE.Scene();
     scene.background = new THREE.Color(0x1a2233);
 
-    const camera = new THREE.PerspectiveCamera(
+    var camera = new THREE.PerspectiveCamera(
         45,
         container.clientWidth / container.clientHeight,
         0.1,
@@ -64,57 +117,60 @@ document.addEventListener('DOMContentLoaded', async () => {
     );
     camera.position.set(4, 3, 6);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    var renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
 
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
     scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
-    const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+    var dir = new THREE.DirectionalLight(0xffffff, 0.8);
     dir.position.set(3, 6, 4);
     scene.add(dir);
 
-    const stage = new THREE.Mesh(
+    var stage = new THREE.Mesh(
         new THREE.CylinderGeometry(2.2, 2.4, 0.3, 48),
         new THREE.MeshStandardMaterial({ color: 0x37474f })
     );
     stage.position.y = -0.15;
     scene.add(stage);
 
-    const items = new THREE.Group();
+    var items = new THREE.Group();
 
-    const geos = [
+    var geos = [
         new THREE.BoxGeometry(0.8, 0.8, 0.8),
         new THREE.SphereGeometry(0.5, 32, 32),
         new THREE.TorusGeometry(0.4, 0.16, 16, 48)
     ];
 
-    const colors = [0x4fc3f7, 0xffb74d, 0xef5350];
+    var colors = [0x4fc3f7, 0xffb74d, 0xef5350];
 
-    geos.forEach((geo, i) => {
-        const angle = (i / geos.length) * Math.PI * 2;
-        const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: colors[i] }));
+    for (var i = 0; i < geos.length; i++) {
+        var angle = (i / geos.length) * Math.PI * 2;
+        var mesh = new THREE.Mesh(
+            geos[i],
+            new THREE.MeshStandardMaterial({ color: colors[i] })
+        );
         mesh.position.set(Math.cos(angle) * 1.4, 0.6, Math.sin(angle) * 1.4);
         items.add(mesh);
-    });
+    }
 
     scene.add(items);
 
-    const animate = () => {
+    function animate() {
         requestAnimationFrame(animate);
         items.rotation.y += 0.005;
         controls.update();
         renderer.render(scene, camera);
-    };
+    }
 
     animate();
 
-    window.addEventListener('resize', () => {
+    window.addEventListener('resize', function () {
         camera.aspect = container.clientWidth / container.clientHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(container.clientWidth, container.clientHeight);
     });
-});
+}
