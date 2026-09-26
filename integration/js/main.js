@@ -11,15 +11,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const roomList = document.getElementById('roomList');
 
     function renderRooms() {
-        const floor = floorFilter.value;
-        const openOnly = openFilter.checked;
-
-        let filtered = rooms;
-        if (floor !== 'all') filtered = filtered.filter(r => r.floor === Number(floor));
-        if (openOnly) filtered = filtered.filter(r => r.open);
-
-        roomList.innerHTML = filtered.length
-            ? filtered.map(r => `<li class="list-group-item">${r.name} — ${r.open ? '开放' : '关闭'}</li>`).join('')
+        let list = rooms;
+        if (floorFilter.value !== 'all') list = list.filter(r => r.floor === Number(floorFilter.value));
+        if (openFilter.checked) list = list.filter(r => r.open);
+        roomList.innerHTML = list.length
+            ? list.map(r => `<li class="list-group-item">${r.name} — ${r.open ? '开放' : '关闭'}</li>`).join('')
             : '<li class="list-group-item text-muted">无匹配结果</li>';
     }
 
@@ -30,8 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const res = await fetch('data/data.json');
     const data = await res.json();
 
-    const ctx = document.getElementById('usageChart');
-    new Chart(ctx, {
+    new Chart(document.getElementById('usageChart'), {
         type: 'bar',
         data: {
             labels: data.map(d => d.room),
@@ -51,4 +46,50 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
     });
+
+    const container = document.getElementById('three-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xeeeeee);
+
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.position.set(0, 2, 6);
+
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+
+    const building = new THREE.Mesh(
+        new THREE.BoxGeometry(1.5, 2, 1.5),
+        new THREE.MeshStandardMaterial({ color: 0x0d6efd })
+    );
+    scene.add(building);
+
+    let dragging = false;
+    let prevX = 0;
+    let prevY = 0;
+
+    renderer.domElement.addEventListener('mousedown', e => {
+        dragging = true;
+        prevX = e.clientX;
+        prevY = e.clientY;
+    });
+
+    document.addEventListener('mouseup', () => dragging = false);
+
+    document.addEventListener('mousemove', e => {
+        if (!dragging) return;
+        scene.rotation.y += (e.clientX - prevX) * 0.005;
+        scene.rotation.x += (e.clientY - prevY) * 0.005;
+        prevX = e.clientX;
+        prevY = e.clientY;
+    });
+
+    function animate() {
+        requestAnimationFrame(animate);
+        building.rotation.y += 0.003;
+        renderer.render(scene, camera);
+    }
+    animate();
 });

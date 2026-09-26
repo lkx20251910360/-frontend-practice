@@ -19,7 +19,7 @@
                     <li class="nav-item"><a class="nav-link active" href="#home">首页</a></li>
                     <li class="nav-item"><a class="nav-link" href="#study">自习室</a></li>
                     <li class="nav-item"><a class="nav-link" href="#stats">统计</a></li>
-                    <li class="nav-item"><a class="nav-link" href="three-d/scene.html">校园三维</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#three">校园三维</a></li>
                 </ul>
             </div>
         </div>
@@ -59,10 +59,17 @@
                 <canvas id="usageChart"></canvas>
             </div>
         </section>
+
+        <section id="three" class="mb-5">
+            <h2>校园三维导览</h2>
+            <p class="text-muted">鼠标拖动旋转视角</p>
+            <div id="three-container" style="width: 100%; height: 400px; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;"></div>
+        </section>
     </main>
 
     <script src="libs/bootstrap.bundle.min.js"></script>
     <script src="libs/chart.umd.js"></script>
+    <script src="libs/three.min.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
