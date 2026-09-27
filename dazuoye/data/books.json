@@ -1,0 +1,8 @@
+[
+  { "title": "JavaScript高级程序设计", "category": "计算机", "floor": 2, "total": 10, "available": 3, "borrowed": 7 },
+  { "title": "三体", "category": "文学", "floor": 3, "total": 8, "available": 0, "borrowed": 8 },
+  { "title": "百年孤独", "category": "文学", "floor": 3, "total": 6, "available": 2, "borrowed": 4 },
+  { "title": "数据结构与算法", "category": "计算机", "floor": 2, "total": 12, "available": 5, "borrowed": 7 },
+  { "title": "中国通史", "category": "历史", "floor": 4, "total": 5, "available": 1, "borrowed": 4 },
+  { "title": "高等数学", "category": "数学", "floor": 1, "total": 15, "available": 6, "borrowed": 9 }
+]
