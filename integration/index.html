@@ -3,74 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>迷你版校园公共信息中心</title>
-    <link rel="stylesheet" href="libs/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <title>图书馆数据看板</title>
+    <link href="libs/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        .chart-box { height: 360px; }
+        #status { display: none; }
+        .view { padding-top: 1rem; }
+
+        li.done { text-decoration: line-through; color: #999; }
+        .del { margin-left: 12px; cursor: pointer; }
+        .tip { color: #c00; font-size: 14px; min-height: 20px; }
+        .filters { margin: 12px 0; }
+        .filters button { margin-right: 8px; }
+
+        .room-item { cursor: pointer; transition: all .15s; }
+        .room-item:hover { background: #f8f9fa; }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="#">校园信息中心</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <a class="navbar-brand" href="#home">图书馆数据看板</a>
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#mainNav"
+                    aria-controls="mainNav" aria-expanded="false"
+                    aria-label="切换导航">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="mainNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link active" href="#home">首页</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#study">自习室</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#stats">统计</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#three">校园三维</a></li>
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" data-route="home" href="#home">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-route="study" href="#study">自习室</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-route="stats" href="#stats">统计</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-route="campus3d" href="#campus3d">校园三维</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <main class="container my-4">
-        <section id="home" class="mb-5">
-            <h2>欢迎来到校园公共信息中心</h2>
-            <p>本页面整合了自习室查询、使用统计与校园三维导览功能。</p>
-        </section>
+    <div class="container py-4">
 
-        <section id="study" class="mb-5">
-            <h2>自习室查询</h2>
-            <div class="row g-3 mb-3">
-                <div class="col-md-4">
-                    <select id="floorFilter" class="form-select">
-                        <option value="all">全部楼层</option>
-                        <option value="1">一楼</option>
-                        <option value="2">二楼</option>
-                        <option value="3">三楼</option>
-                        <option value="4">四楼</option>
-                    </select>
+        <header>
+            <h1 class="h3">图书馆数据看板</h1>
+            <p class="text-muted" id="sub-title">数据来源：课程统一数据集</p>
+        </header>
+
+        <p id="status" class="alert alert-warning"></p>
+
+        <section id="view-home" class="view">
+            <section class="row g-3 mb-4" id="cards"></section>
+
+            <section class="row g-3">
+                <div class="col-lg-6">
+                    <h2 class="h5">各月借阅量（ECharts柱状图）</h2>
+                    <div id="bar-chart" class="chart-box"></div>
                 </div>
-                <div class="col-md-4">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="openFilter">
-                        <label class="form-check-label" for="openFilter">仅显示开放</label>
+                <div class="col-lg-6">
+                    <h2 class="h5">借阅趋势（Chart.js折线图）</h2>
+                    <div class="chart-box">
+                        <canvas id="line-chart"></canvas>
                     </div>
                 </div>
+            </section>
+        </section>
+
+        <section id="view-study" class="view d-none">
+            <h2 class="h4 mb-3">自习室</h2>
+            <h3 class="h5">任务清单</h3>
+            <form id="add-form">
+                <input type="text" id="task-input" placeholder="要做什么？" class="form-control d-inline-block" style="width:auto;">
+                <button type="submit" class="btn btn-primary btn-sm">添加</button>
+            </form>
+            <p class="tip" id="tip"></p>
+
+            <div class="filters">
+                <button class="btn btn-sm btn-outline-secondary" data-filter="all">全部</button>
+                <button class="btn btn-sm btn-outline-secondary" data-filter="active">未完成</button>
+                <button class="btn btn-sm btn-outline-secondary" data-filter="done">已完成</button>
             </div>
-            <ul id="roomList" class="list-group"></ul>
+
+            <ul id="task-list" class="list-group"></ul>
         </section>
 
-        <section id="stats" class="mb-5">
-            <h2>使用统计</h2>
-            <div style="max-width: 600px;">
-                <canvas id="usageChart"></canvas>
-            </div>
+        <section id="view-stats" class="view d-none">
+            <h2 class="h4 mb-3">统计</h2>
+            <div class="chart-box" id="room-chart"></div>
         </section>
 
-        <section id="three" class="mb-5">
-            <h2>校园三维导览</h2>
-            <p class="text-muted">鼠标拖动旋转视角，滚轮缩放</p>
-            <div id="three-container" style="width: 100%; height: 400px; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;"></div>
+        <section id="view-campus3d" class="view d-none">
+            <h2 class="h4 mb-3">校园三维</h2>
+            <p class="text-muted">旋转展示台 —— 鼠标拖动旋转、滚轮缩放。</p>
+            <div id="three-container"></div>
         </section>
-    </main>
 
-    <script src="libs/bootstrap.bundle.min.js" defer></script>
-    <script src="libs/chart.umd.js" defer></script>
-    <script src="libs/three.min.js" defer></script>
-    <script src="libs/OrbitControls.js" defer></script>
-    <script src="js/main.js" defer></script>
+    </div>
+
+    <footer class="text-center text-muted py-4 small">
+        © 图书馆数据看板 · 课程示例
+    </footer>
+
+<script src="libs/jquery-3.7.1.min.js"></script>
+<script src="libs/bootstrap.bundle.min.js"></script>
+<script src="libs/echarts.min.js"></script>
+<script src="libs/chart.umd.js"></script>
+<script src="libs/three.min.js"></script>
+<script src="libs/OrbitControls.js"></script>
+<script src="app.js"></script>
+
 </body>
 </html>

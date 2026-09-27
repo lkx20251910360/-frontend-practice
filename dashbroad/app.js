@@ -40,6 +40,8 @@ const renderCards = (data) => {
     `);
   });
 };
+
+loadData();
 let barChart = null;
 
 const renderBarChart = (data) => {
@@ -63,7 +65,7 @@ let lineChart = null;
 
 const renderLineChart = (data) => {
   if (lineChart !== null) {
-    lineChart.destroy();               
+    lineChart.destroy();               // 防重复初始化
   }
   const ctx = document.querySelector('#line-chart');
   lineChart = new Chart(ctx, {
@@ -88,5 +90,7 @@ const renderLineChart = (data) => {
 
 window.addEventListener('resize', () => {
   if (barChart) barChart.resize();
+
 });
-loadData();
+
+
