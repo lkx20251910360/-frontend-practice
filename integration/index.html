@@ -3,29 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>图书馆数据看板</title>
+    <title>校园数据看板</title>
     <link href="libs/bootstrap.min.css" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
+        .view { padding-top: 1rem; }
+
         .chart-box { height: 360px; }
         #status { display: none; }
-        .view { padding-top: 1rem; }
 
         li.done { text-decoration: line-through; color: #999; }
         .del { margin-left: 12px; cursor: pointer; }
         .tip { color: #c00; font-size: 14px; min-height: 20px; }
         .filters { margin: 12px 0; }
         .filters button { margin-right: 8px; }
-
-        .room-item { cursor: pointer; transition: all .15s; }
-        .room-item:hover { background: #f8f9fa; }
     </style>
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="#home">图书馆数据看板</a>
+            <a class="navbar-brand" href="#home">校园数据看板</a>
             <button class="navbar-toggler" type="button"
                     data-bs-toggle="collapse" data-bs-target="#mainNav"
                     aria-controls="mainNav" aria-expanded="false"
@@ -53,14 +51,14 @@
 
     <div class="container py-4">
 
-        <header>
-            <h1 class="h3">图书馆数据看板</h1>
-            <p class="text-muted" id="sub-title">数据来源：课程统一数据集</p>
-        </header>
-
-        <p id="status" class="alert alert-warning"></p>
-
         <section id="view-home" class="view">
+            <header>
+                <h1 class="h3">图书馆数据看板</h1>
+                <p class="text-muted" id="sub-title">数据来源：课程统一数据集</p>
+            </header>
+
+            <p id="status" class="alert alert-warning"></p>
+
             <section class="row g-3 mb-4" id="cards"></section>
 
             <section class="row g-3">
@@ -78,8 +76,7 @@
         </section>
 
         <section id="view-study" class="view d-none">
-            <h2 class="h4 mb-3">自习室</h2>
-            <h3 class="h5">任务清单</h3>
+            <h2 class="h4 mb-3">任务清单</h2>
             <form id="add-form">
                 <input type="text" id="task-input" placeholder="要做什么？" class="form-control d-inline-block" style="width:auto;">
                 <button type="submit" class="btn btn-primary btn-sm">添加</button>
@@ -93,6 +90,19 @@
             </div>
 
             <ul id="task-list" class="list-group"></ul>
+
+            <h3 class="h5 mt-4">自习室列表</h3>
+            <div class="filters">
+                <button class="btn btn-sm btn-outline-primary" data-floor="all">全部楼层</button>
+                <button class="btn btn-sm btn-outline-primary" data-floor="1">一楼</button>
+                <button class="btn btn-sm btn-outline-primary" data-floor="2">二楼</button>
+                <button class="btn btn-sm btn-outline-primary" data-floor="3">三楼</button>
+                <button class="btn btn-sm btn-outline-secondary ms-2" data-status="all">全部状态</button>
+                <button class="btn btn-sm btn-outline-secondary" data-status="open">开放中</button>
+                <button class="btn btn-sm btn-outline-secondary" data-status="closed">已关闭</button>
+            </div>
+
+            <ul class="list-group" id="room-list"></ul>
         </section>
 
         <section id="view-stats" class="view d-none">
@@ -102,14 +112,13 @@
 
         <section id="view-campus3d" class="view d-none">
             <h2 class="h4 mb-3">校园三维</h2>
-            <p class="text-muted">旋转展示台 —— 鼠标拖动旋转、滚轮缩放。</p>
             <div id="three-container"></div>
         </section>
 
     </div>
 
     <footer class="text-center text-muted py-4 small">
-        © 图书馆数据看板 · 课程示例
+        © 校园数据看板 · 课程示例
     </footer>
 
 <script src="libs/jquery-3.7.1.min.js"></script>
