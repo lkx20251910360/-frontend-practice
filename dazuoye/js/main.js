@@ -122,12 +122,12 @@ function init3d() {
   ground.rotation.x = -Math.PI / 2;
   scene.add(ground);
 
-  const box1 = new THREE.Mesh(
+  const building = new THREE.Mesh(
     new THREE.BoxGeometry(2.5, 3.5, 1.8),
     new THREE.MeshStandardMaterial({ color: 0x90caf9 })
   );
-  box1.position.y = 1.75;
-  scene.add(box1);
+  building.position.y = 1.75;
+  scene.add(building);
 
   const pole = new THREE.Mesh(
     new THREE.CylinderGeometry(0.05, 0.05, 3, 16),
@@ -138,7 +138,7 @@ function init3d() {
 
   const animate = () => {
     requestAnimationFrame(animate);
-    box1.rotation.y += 0.005;
+    building.rotation.y += 0.005;
     renderer.render(scene, camera);
   };
   animate();
@@ -149,6 +149,7 @@ function init3d() {
     renderer.setSize(box.clientWidth, box.clientHeight);
   });
 }
+
 $(function() {
   bindSearch();
   loadBooks();
