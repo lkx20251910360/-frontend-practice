@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>图书馆信息中心</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="libs/bootstrap.min.css">
   <style>
     body { background: #fff; color: #000; }
     nav { background: #0d47a1; }
@@ -44,17 +44,10 @@
       <div id="msg" class="text-danger"></div>
       <ul id="book-list"></ul>
     </section>
-
-    <section id="stats" class="mt-5">
-      <h2>数据图表</h2>
-      <div id="chart1" style="height:260px;"></div>
-      <div id="chart2" style="height:260px;"></div>
-    </section>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+  <script src="libs/jquery.min.js"></script>
+  <script src="libs/bootstrap.bundle.min.js"></script>
 
   <script>
     let books = [];
@@ -72,39 +65,10 @@
       });
     }
 
-    function drawCharts(data) {
-      const categories = [...new Set(data.map(b => b.category))];
-      const totalByCategory = categories.map(c =>
-        data.filter(b => b.category === c).reduce((s, b) => s + b.total, 0)
-      );
-
-      echarts.init(document.getElementById('chart1')).setOption({
-        title: { text: '各分类藏书量' },
-        xAxis: { type: 'category', data: categories },
-        yAxis: { type: 'value' },
-        series: [{ type: 'bar', data: totalByCategory, itemStyle: { color: '#0d47a1' } }]
-      });
-
-      const totalAvailable = data.reduce((s, b) => s + b.available, 0);
-      const totalBorrowed = data.reduce((s, b) => s + b.borrowed, 0);
-
-      echarts.init(document.getElementById('chart2')).setOption({
-        title: { text: '可借与已借占比' },
-        series: [{
-          type: 'pie',
-          data: [
-            { name: '可借', value: totalAvailable, itemStyle: { color: '#0d47a1' } },
-            { name: '已借出', value: totalBorrowed, itemStyle: { color: '#000000' } }
-          ]
-        }]
-      });
-    }
-
     $.getJSON('data/books.json')
       .done(data => {
         books = data;
         render(books);
-        drawCharts(books);
       })
       .fail(() => {
         $('#book-list').append('<li>数据加载失败</li>');
