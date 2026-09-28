@@ -13,6 +13,16 @@ function render(list) {
   });
 }
 
+function updateSummary(list) {
+  const total = list.length;
+  const availableCount = list.filter(b => b.available > 0).length;
+  const totalBooks = list.reduce((s, b) => s + b.total, 0);
+  const totalAvailable = list.reduce((s, b) => s + b.available, 0);
+  $('#book-summary').text(
+    `共 ${total} 种图书，总藏书 ${totalBooks} 本，当前可借 ${totalAvailable} 本，可借种类 ${availableCount} 种。`
+  );
+}
+
 function bindSearch() {
   $('#keyword, #category').on('input change', () => {
     const kw = $('#keyword').val().trim();
@@ -29,6 +39,7 @@ function bindSearch() {
       b.title.includes(kw) && (cat === '' || b.category === cat)
     );
     render(list);
+    updateSummary(list);
   });
 }
 
@@ -37,9 +48,11 @@ function loadBooks() {
     .done(data => {
       books = data;
       render(books);
+      updateSummary(books);
     })
     .fail(() => {
       $('#book-list').append('<li>数据加载失败</li>');
+      $('#book-summary').text('数据加载失败');
     });
 }
 
@@ -86,11 +99,10 @@ function init3d() {
   const h = box.clientHeight || 360;
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x16213e);
-  scene.fog = new THREE.Fog(0x16213e, 8, 20);
+  scene.background = new THREE.Color(0xdfefff);
 
   const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
-  camera.position.set(4, 3, 6);
+  camera.position.set(4, 3, 7);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(w, h);
@@ -98,36 +110,35 @@ function init3d() {
 
   new THREE.OrbitControls(camera, renderer.domElement);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-  const dir = new THREE.DirectionalLight(0xffffff, 0.8);
-  dir.position.set(3, 6, 4);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  const dir = new THREE.DirectionalLight(0xffffff, 1);
+  dir.position.set(5, 8, 6);
   scene.add(dir);
 
-  const stage = new THREE.Mesh(
-    new THREE.CylinderGeometry(2.2, 2.4, 0.3, 48),
-    new THREE.MeshStandardMaterial({ color: 0x37474f })
+  const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(12, 12),
+    new THREE.MeshStandardMaterial({ color: 0xa5d6a7 })
   );
-  stage.position.y = -0.15;
-  scene.add(stage);
+  ground.rotation.x = -Math.PI / 2;
+  scene.add(ground);
 
-  const items = new THREE.Group();
-  const geos = [
-    new THREE.BoxGeometry(0.8, 0.8, 0.8),
-    new THREE.SphereGeometry(0.5, 32, 32),
-    new THREE.TorusGeometry(0.4, 0.16, 16, 48)
-  ];
-  const colors = [0x4fc3f7, 0xffb74d, 0xef5350];
-  geos.forEach((geo, i) => {
-    const angle = (i / geos.length) * Math.PI * 2;
-    const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: colors[i] }));
-    mesh.position.set(Math.cos(angle) * 1.4, 0.6, Math.sin(angle) * 1.4);
-    items.add(mesh);
-  });
-  scene.add(items);
+  const box1 = new THREE.Mesh(
+    new THREE.BoxGeometry(2.5, 3.5, 1.8),
+    new THREE.MeshStandardMaterial({ color: 0x90caf9 })
+  );
+  box1.position.y = 1.75;
+  scene.add(box1);
+
+  const pole = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.05, 0.05, 3, 16),
+    new THREE.MeshStandardMaterial({ color: 0x9e9e9e })
+  );
+  pole.position.set(2.5, 1.5, 0);
+  scene.add(pole);
 
   const animate = () => {
     requestAnimationFrame(animate);
-    items.rotation.y += 0.005;
+    box1.rotation.y += 0.005;
     renderer.render(scene, camera);
   };
   animate();
@@ -138,7 +149,6 @@ function init3d() {
     renderer.setSize(box.clientWidth, box.clientHeight);
   });
 }
-
 $(function() {
   bindSearch();
   loadBooks();

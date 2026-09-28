@@ -56,6 +56,11 @@
 
     <section id="books">
       <h2>图书查询</h2>
+
+      <h3>馆藏概况</h3>
+      <p id="book-summary">正在加载数据……</p>
+
+      <h3>查询条件</h3>
       <input id="keyword" class="form-control mb-2" placeholder="搜索书名">
       <select id="category" class="form-select mb-2">
         <option value="">全部分类</option>
@@ -65,7 +70,17 @@
         <option>数学</option>
       </select>
       <div id="msg" class="text-danger"></div>
+
+      <h3>图书列表</h3>
       <ul id="book-list"></ul>
+
+      <h3>借阅状态说明</h3>
+      <ul>
+        <li>可借数量大于 0，表示当前可以借阅</li>
+        <li>可借数量为 0，表示已全部借出，可等待归还</li>
+        <li>借书期限 30 天，可续借一次</li>
+        <li>逾期未还将暂停借阅权限</li>
+      </ul>
     </section>
 
     <section id="stats">
